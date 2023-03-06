@@ -1,10 +1,11 @@
 <template>
-  {{ state.smalFetchData.main }}
-  {{ state.smalFetchData.wind }}
-  {{ state.smalFetchData.weather }}
-  {{ state.Country.name }}
-  {{ state.Country.country }}
-  <input type="text" v-model="searchQuery" @keyup.enter="fetchData" />
+  <input
+    class="bg-red-200"
+    type="text"
+    v-model="searchQuery"
+    @keyup.enter="fetchData"
+  />
+
 
   <div class="w-max-[1920px] h-screen overflow-hidden">
     <!--Background-->
@@ -25,57 +26,51 @@
       >
         <div class="flex items-center justify-center">
           <div>
-            <p class="text-[110px]">24°</p>
+            <p class="text-[110px]">
+              {{ Math.floor(state.temp_big + -272.15) }}°
+            </p>
           </div>
 
           <div class="ml-[20px] ml-[29px]">
-            <p class="text-[60px]">Istanbul</p>
+            <p class="text-[60px]">
+              {{ state.Country }} {{ searchQuery }}
+            </p>
             <div class="flex text-[25px]">
-              <p>06:09 AM</p>
-              <p>-</p>
-              <p>Monday</p>
-              <p>,</p>
-              <p>9 Sep 23</p>
+              <p>{{ state.dt }}</p>
             </div>
           </div>
 
           <div class="flex flex-col items-center relative">
             <img src="../public/image/sunny-icon.svg" />
-            <p class="absolute mt-[120px] text-[22px] font-bold">Sunny</p>
+            <p class="absolute mt-[120px] text-[22px] font-bold">
+              {{ state.main }}
+            </p>
           </div>
         </div>
 
-        <div class="flex mt-[15px] items-center">
+        <div class="mr-[30px] flex mt-[15px] items-center">
           <div class="mr-[70px]">
-            <p>Humidity</p>
+            <p class="mb-[10px]">Humidity</p>
             <div class="flex">
               <img src="../public/image/drop-icon.svg" />
-              <p class="ml-[46px]">43%</p>
+              <p class="ml-[46px]">{{ state.humudity * 1 }} %</p>
             </div>
           </div>
 
           <div class="mr-[70px]">
-            <p>Pressure</p>
+            <p class="mb-[10px]">Pressure</p>
             <div class="flex">
               <img src="../public/image/wind-icon.svg" />
-              <p class="ml-[46px]">1016 hPa</p>
-            </div>
-          </div>
-
-          <div class="mr-[70px]">
-            <p>Visibility</p>
-            <div class="flex">
-              <img src="../public/image/Show-icon.svg" />
-              <p class="ml-[46px]">10km</p>
+              <p class="ml-[46px]">{{ state.wind * 3.6 }} km/h</p>
             </div>
           </div>
 
           <div>
-            <p>Feels Like</p>
+            <p class="mb-[10px]">Feels Like</p>
             <div class="flex">
               <img width="30" src="../public/image/Thermometer-icon.svg" />
               <span class="flex">
-                <p class="ml-[46px]">18°</p>
+                <p class="ml-[46px]">{{ Math.floor(state.temp + -272.15) }}°</p>
                 <p>c</p>
               </span>
             </div>
@@ -143,40 +138,97 @@
 </style>
 
 <script setup>
-import { ref, reactive, onMounted} from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import axios from "axios";
 
-const searchQuery = ref('');
+const searchQuery = ref("");
 const state = reactive({
-  smalFetchData: [],
   Country: [],
   bigFetchData: [],
+  humudity: [],
+  wind: [],
+  temp: null,
+  temp_big: null,
+  main: null,
+  dt: null,
 });
+
+const date = () => {
+  const time = state.dt;
+  const time_date = charAt(time.lenght - 4);
+};
 //https://api.openweathermap.org/data/2.5/weather?lat=${latData.value}&lon=${lonData.value}&appid=5576aaead41a83e37e1a4d7df061a13b
 //https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=41.0091982&lon=28.9662187&appid=b1b15e88fa797225412429c1c50c122a1
 
+const latandlon = reactive({
+  lat: null,
+  lon: null,
+});
+
+async function getUserLocation(){
+  if (navigator.geolocation) {
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+    latandlon.lat = position.coords.latitude;
+    latandlon.lon = position.coords.longitude;
+  } else {
+    console.error("Geolocation is not supported by this browser.");
+  }
+
+  const url = `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${latandlon.lat}&lon=${latandlon.lon}&appid=b1b15e88fa797225412429c1c50c122a1`;
+  try {
+    const bigData = await axios.get(url);
+    state.bigFetchData = bigData.data;
+    state.wind = bigData.data.list[0].wind.speed;
+    state.temp = bigData.data.list[0].main.feels_like;
+    state.humudity = bigData.data.list[0].main.humidity;
+    state.temp_big = bigData.data.list[0].main.temp;
+    state.main = bigData.data.list[0].weather[0].main;
+    state.dt = bigData.data.list[0].dt_txt.slice(0, 16);
+    console.log(bigData.data.list[0])
+  } catch (error) {
+    console.error(error);
+  }
+
+  const url2 = `https://api.openweathermap.org/data/2.5/weather?lat=${latandlon.lat}&lon=${latandlon.lon}&appid=${import.meta.env.VITE_API}`
+  try {
+    const countryData = await axios.get(url2)
+    state.Country = countryData.data.sys.country
+    console.log(state.Country)
+  } catch {
+
+  }
+};
 
 async function fetchData() {
-  const dataKey = "5576aaead41a83e37e1a4d7df061a13b"
-  const response1 = await axios.get(`https://api.openweathermap.org/geo/1.0/direct?q=${searchQuery.value}&limit=5&appid=${dataKey}`);
-  state.Country = response1.data[0]
-  console.log(response1.data[0]);
+  const response1 = await axios.get(
+    `https://api.openweathermap.org/geo/1.0/direct?q=${
+      searchQuery.value
+    }&limit=5&appid=${import.meta.env.VITE_API}`
+  );
+  state.Country = response1.data[0].country;
+  console.log(response1.data[0])
+  latandlon.lat = response1.data[0]?.lat;
+  latandlon.lon = response1.data[0]?.lon;
 
-  const lat = response1.data[0]?.lat;
-  const lon = response1.data[0]?.lon;
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${dataKey}`
-
-  console.log(url)
-
-  const smallData = await axios.get(url);
-  state.smalFetchData = smallData.data
-  console.log(smallData.data)
-
-  const url2 = `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=b1b15e88fa797225412429c1c50c122a1`
-  console.log(url2)
-  const bigData = await axios.get(url2);
-  state.bigFetchData = bigData.data
-  console.log(bigData.data)
+  const url = `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${latandlon.lat}&lon=${latandlon.lon}&appid=b1b15e88fa797225412429c1c50c122a1`;
+  try {
+    const bigData = await axios.get(url);
+    state.bigFetchData = bigData.data;
+    state.wind = bigData.data.list[0].wind.speed;
+    state.temp = bigData.data.list[0].main.feels_like;
+    state.humudity = bigData.data.list[0].main.humidity;
+    state.temp_big = bigData.data.list[0].main.temp;
+    state.main = bigData.data.list[0].weather[0].main;
+    state.dt = bigData.data.list[0].dt_txt.slice(0, 16);
+  } catch (error) {
+    console.error(error);
+  }
 }
+
+onMounted(() => {
+  getUserLocation();
+});
 
 </script>
