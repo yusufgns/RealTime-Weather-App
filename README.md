@@ -1,7 +1,19 @@
-# Vue 3 + Vite
+## WeatherData
+This is a project that I created to improve myself, which shows the weather worldwide.
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Description
+This project provides information about the weather using the openweathermap API.
 
-## Recommended IDE Setup
+## Technologies Used
+Vue3
+TailwindCSS - CSS
+Axios (API)
+Vue Router
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## How to Use
+When you enter the site, the Geolocation API of Javascript is used to get the data of your current location. Based on this data, the initial display is provided on the Home page. You can make your selection on the map through the Location Maps section with the help of the Google Maps API.
+
+## Missing Features
+- Google Maps will be added.
+- Right Menu will be added.
+- Local Storage will be added.
