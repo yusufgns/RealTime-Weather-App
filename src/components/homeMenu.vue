@@ -11,15 +11,14 @@
             placeholder="Latitude and longitude or city name..."
             type="text"
             v-model="searchQuery"
-            @keyup="fetchData"
-            
+            @keyup.enter="fetchData"
           />
           
           <img class="absolute right-[13%]" src="../public/image/search-icon.svg">
         </div>
       </span>
 
-      <span class="z-[9999]" v-if="latandlon.lon !== null">
+      <span class="listMenu z-[9999] overflow-auto" v-if="latandlon.lon !== null">
         <div class="pl-[10%] pr-[10%] z-[9999]">
         <h1 class="h1Header font-bold text-[26px] py-[33px] text-white text-opacity-70">
           4 Days of 96 Data
@@ -32,11 +31,11 @@
             </div>
         </div>
       </div>
-      <div class="flex z-[9999] items-center justify-center">
-        <button @click="redirect" class="mt-[15px] text-[18px] font-bold bg-gray-400 bg-opacity-50 px-[30px]
-        py-2 rounded-xl" >To See All Data</button>
-      </div>
       </span>
+      <div v-if="latandlon.lon !== null" class="flex z-[9999] items-center justify-center pb-[50px]">
+        <button class="mt-[15px] text-[14px] font-bold bg-gray-400 bg-opacity-50 px-[30px]
+        py-2 rounded-xl" >Scroll Fown For More</button>
+      </div>
     </div>
   </div>
 </template>
@@ -46,13 +45,17 @@
   background-color: rgba(67, 67, 67, 35%);
 }
 
+.listMenu {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.listMenu::-webkit-scrollbar {
+  display: none;
+}
 .odd {
   background-color: transparent;
 }
 
-.h1Header {
-  border-top: 2px solid #a0a0a0;
-}
 .menuInput {
   border-bottom: 2px solid #a0a0a0;
   outline: none;
@@ -72,13 +75,6 @@
 <script setup>
 import { ref, reactive } from "vue";
 import axios from "axios";
-import {useRouter} from "vue-router"
-
-
-const router = useRouter()
-const redirect = () => {
-  router.push('/maps')
-}
 
 const searchQuery = ref("");
 /*const state = reactive({
@@ -102,7 +98,7 @@ const latandlon = reactive({
   lon: null,
 });
 
-async function fetchData() {
+async function fetchData(e) {
   const response1 = await axios.get(
     `https://api.openweathermap.org/geo/1.0/direct?q=${
       searchQuery.value
@@ -115,13 +111,11 @@ async function fetchData() {
   console.log(url);
   try {
     const bigData = await axios.get(url);
-    states.value = bigData.data.list.slice(0, 9)
+    states.value = bigData.data.list
     
-    console.log(states2.value)
   } catch (error) {
     console.error(error);
   }
-
-  return;
+  searchQuery.value = "";
 }
 </script>
