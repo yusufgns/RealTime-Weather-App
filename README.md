@@ -18,3 +18,4 @@ Therefore, apart from the automatically incoming data, you can access 96 4-day d
 - Google Maps
 - <del>Right Menu</del>
 - Local Storage
+- Design for below 670px
