@@ -1,5 +1,5 @@
   <template>
-    <div class="w-max-[1920px] h-screen overflow-hidden">    
+    <div class=" h-screen overflow-hidden max-[1025px]:flex max-[670px]:hidden">
       
       <div class="flex items-center justify-center bottom-0 absolute left-[20%]" v-if="state.error !== null">
         <div class="bg-[#FFE1BA] px-[100px] py-[15px] rounded-[25px] z-[9999]">
@@ -9,9 +9,9 @@
   
       <div class="w-max-[1920px]" v-if="latandlon.lon !== null">
         <div
-          class="leftPage text-white bottom-0 absolute ml-[178px] mb-[200px] items-center justify-center flex flex-col"
+          class="max-[1025px]:mb-[100px] max-[1025px]:ml-[20px] leftPage text-white bottom-0 absolute ml-[178px] mb-[200px] items-center justify-center flex flex-col"
         >
-          <div class="flex items-center justify-center">
+          <div class="flex items-center justify-center max-[1025px]:flex max-[830px]:flex-col">
             <div>
               <p class="text-[110px]">{{ Math.floor(state.temp_big) }}°</p>
             </div>
@@ -20,7 +20,7 @@
               <p class="text-[60px]">
                 {{ state.Country }} {{ state.CountryName }}
               </p>
-              <div class="flex text-[25px]">
+              <div class="flex text-[25px] max-[1025px]:justify-center">
                 <p>{{ state.dt }}</p>
               </div>
             </div>
@@ -36,7 +36,7 @@
             </div>
           </div>
   
-          <div class="mr-[30px] flex mt-[40px] items-center">
+          <div class="mr-[30px] flex mt-[40px] items-center max-[1025px]:mt-[80px]">
             <div class="mr-[70px]">
               <p class="mb-[10px]">Humidity</p>
               <div class="flex">
@@ -185,4 +185,7 @@ function errorCallback(error) {
 
 
 navigator.geolocation.getCurrentPosition(getUserLocation, errorCallback);
+onMounted(() => {
+  getUserLocation
+})
 </script>

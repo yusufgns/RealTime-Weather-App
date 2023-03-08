@@ -1,7 +1,11 @@
 <template>
 
-  <div class="absolute right-0 w-[640px] text-white">
-    <div class="h-screen w-full flex flex-col">
+  <div class="absolute right-0 w-[640px] text-white h-full max-[670px]:hidden">
+    <div @click="toggleMenu" :class="[showMenu === false ? 'rightClick' : 'leftClick']" class="menu-color w-[50px] h-[50px] absolute z-[99999] items-center flex justify-center rounded-[100%] top-[100px]">
+      <img src="../public/image/search-icon.svg" width="30">
+    </div>
+    <span v-if="showMenu">
+      <div class="h-screen w-full flex flex-col">
       <div class="menu-color absolute h-screen w-full z-[9998]"></div>
       <div class="absolute menu-blur h-screen w-full z-[9998]"></div>
       <span class="pl-[10%] pr-[10%] z-[9999] mt-[100px]">
@@ -13,20 +17,18 @@
             v-model="searchQuery"
             @keyup.enter="fetchData"
           />
-          
-          <img class="absolute right-[13%]" src="../public/image/search-icon.svg">
         </div>
       </span>
 
       <span class="listMenu z-[9999] overflow-auto" v-if="latandlon.lon !== null">
         <div class="pl-[10%] pr-[10%] z-[9999]">
         <h1 class="h1Header font-bold text-[26px] py-[33px] text-white text-opacity-70">
-          4 Days of 96 Data
+          4 Days of 96 Data - {{ statesName.name }} / {{ statesName.country }}
         </h1>
 
         <div v-if="states" v-for="(state, index) in states" :key="index" :class="[index % 2 === 0 ? 'even' : 'odd']">
             <div class="flex text-white text-opacity-70 justify-between h-[60px] items-center text-[22px] px-[28px] font-bold">
-              <p class="flex items-center">{{ Math.floor(state.main.temp -272.15)}}° <p>{{ state.weather[0].main}}</p></p>
+              <p class="flex items-center">{{ Math.floor(state.main.temp -272.15)}}° <p class="ml-[12px]">{{ state.weather[0].main}}</p></p>
               <p>{{ (state.dt_txt).slice(0, 16) }}</p>
             </div>
         </div>
@@ -37,10 +39,17 @@
         py-2 rounded-xl" >Scroll Fown For More</button>
       </div>
     </div>
+    </span>
   </div>
 </template>
 
 <style scoped>
+.rightClick {
+  right: 100px;
+}
+.leftClick {
+  left: -23px;
+}
 .even {
   background-color: rgba(67, 67, 67, 35%);
 }
@@ -76,6 +85,13 @@
 import { ref, reactive } from "vue";
 import axios from "axios";
 
+
+const showMenu = ref(false);
+
+function toggleMenu() {
+  showMenu.value = !showMenu.value
+};
+
 const searchQuery = ref("");
 /*const state = reactive({
   CountryName: null,
@@ -92,6 +108,7 @@ const searchQuery = ref("");
 });*/
 
 const states = ref({});
+const statesName = ref({})
 
 const latandlon = reactive({
   lat: null,
@@ -112,6 +129,7 @@ async function fetchData(e) {
   try {
     const bigData = await axios.get(url);
     states.value = bigData.data.list
+    statesName.value = bigData.data.city
     
   } catch (error) {
     console.error(error);
