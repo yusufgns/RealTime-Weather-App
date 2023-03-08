@@ -11,9 +11,10 @@ Axios (API)
 Vue Router
 
 ## How to Use
-When you enter the site, the Geolocation API of Javascript is used to get the data of your current location. Based on this data, the initial display is provided on the Home page. You can make your selection on the map through the Location Maps section with the help of the Google Maps API.
+When you enter the site, the Geolocation API of Javascript is used to get the data of your current location. Based on this data, the initial display is provided on the Home page. You can make your selection on the map through the Location Maps section with the help of the Google Maps API. Data is received from GMT +1 as the time zone.
+Therefore, apart from the automatically incoming data, you can access 96 4-day data by searching from the menu on the right.
 
 ## Missing Features
-- Google Maps will be added.
-- Right Menu will be added.
-- Local Storage will be added.
+- Google Maps
+- <del>Right Menu</del>
+- Local Storage
