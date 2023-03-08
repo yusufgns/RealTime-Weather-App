@@ -16,5 +16,5 @@ Therefore, apart from the automatically incoming data, you can access 96 4-day d
 
 ## Missing Features
 - Google Maps
-**- Right Menu**
+- <del>Right Menu</del>
 - Local Storage
