@@ -179,7 +179,7 @@ async function getUserLocation() {
 }
 
 function errorCallback(error) {
-  state.error = `If you provide a location, you can automatically see the weather for your location.`
+  state.error = `If you grant the browser location permission, you can automatically see the weather for your location.`
   console.log(error)
 }
 
