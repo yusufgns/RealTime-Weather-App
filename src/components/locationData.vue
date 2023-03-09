@@ -1,7 +1,7 @@
   <template>
     <div class=" h-screen overflow-hidden max-[1025px]:flex max-[670px]:hidden">
       
-      <div class="flex items-center justify-center bottom-0 absolute left-[20%]" v-if="state.error !== null">
+      <div class="flex items-center justify-center absolute w-full mt-[15px]" v-if="state.error !== null">
         <div class="bg-[#FFE1BA] px-[100px] py-[15px] rounded-[25px] z-[9999]">
           {{ state.error }}
         </div>
