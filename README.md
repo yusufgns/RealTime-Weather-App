@@ -15,7 +15,6 @@ When you enter the site, the Geolocation API of Javascript is used to get the da
 Therefore, apart from the automatically incoming data, you can access 96 4-day data by searching from the menu on the right.
 
 ## Missing Features
-- Google Maps
 - <del>Right Menu</del>
 - Local Storage
 - Design for below 670px
